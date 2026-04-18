@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports =
@@ -90,14 +90,17 @@
   # For Nvidia and alike.
   nixpkgs.config.allowUnfree = true;
 
+  # Nix settings.
+  nix.settings = {
+    substituters = [ "https://noctalia.cachix.org" ];
+    trusted-public-keys = [ "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4=" ];
+  };
+
   # Install firefox.
   programs.firefox.enable = true;
 
-  # Use hyprland.
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-  };
+  # Use Niri.
+  programs.niri.enable = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -107,17 +110,13 @@ environment.systemPackages = with pkgs; [
   xdg-utils
   inotify-tools
   python3
-  quickshell
   git
-  # app launcher
-  rofi
-  # wallpaper
-  awww
   # screenshots
   grim
   slurp
   # file manager
   nautilus
+  rofi
   # media/audio
   playerctl
   brightnessctl
