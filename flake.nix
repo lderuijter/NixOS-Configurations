@@ -1,25 +1,22 @@
 {
   description = "NixOS config";
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    quickshell = {
-      url = "github:outfoxxed/quickshell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.quickshell.follows = "quickshell";
-    };
+
+  nixConfig = {
+    extra-substituters = [ "https://noctalia.cachix.org" ];
+    extra-trusted-public-keys = [ "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4=" ];
   };
-  outputs = { self, nixpkgs, noctalia, ... }@inputs: {
+
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    noctalia.url = "github:noctalia-dev/noctalia-shell";
+    noctalia.inputs.nixpkgs.follows = "nixpkgs";
+  };
+
+  outputs = inputs@{ self, nixpkgs, ... }: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs; };
-      modules = [
-        ./configuration.nix
-        noctalia.nixosModules.default
-      ];
+      modules = [ ./configuration.nix ];
     };
   };
 }

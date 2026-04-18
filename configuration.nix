@@ -90,12 +90,6 @@
   # For Nvidia and alike.
   nixpkgs.config.allowUnfree = true;
 
-  # Nix settings.
-  nix.settings = {
-    substituters = [ "https://noctalia.cachix.org" ];
-    trusted-public-keys = [ "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4=" ];
-  };
-
   # Install firefox.
   programs.firefox.enable = true;
 
@@ -105,6 +99,8 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
 environment.systemPackages = with pkgs; [
+  # Noctalia
+  inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
   kitty
   wl-clipboard
   xdg-utils
