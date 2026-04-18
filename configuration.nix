@@ -14,7 +14,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "NixOS"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -80,27 +80,33 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.rocco = {
     isNormalUser = true;
-    description = "RoccoOnNix";
-    extraGroups = [ "networkmanager" "wheel" ];
+    description = "Rocco";
+    extraGroups = [ "networkmanager" "wheel" "bluetooth" "libvirtd" "adbusers" "kvm" ];
     packages = with pkgs; [
     #  thunderbird
     ];
   };
 
-  # For Nvidia and alike.
   nixpkgs.config.allowUnfree = true;
-
-  # Install firefox.
-  programs.firefox.enable = true;
 
   # Use Niri.
   programs.niri.enable = true;
 
+  # Disable firefox
+programs.firefox.enable = false;
+
+# Virtualization for Android Studio
+virtualisation.libvirtd.enable = true;
+programs.virt-manager.enable = true;
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
 environment.systemPackages = with pkgs; [
-  # Noctalia
+  # noctalia
   inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
+  # zen-browser
+  inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+  # terminal
   kitty
   wl-clipboard
   xdg-utils
@@ -112,7 +118,6 @@ environment.systemPackages = with pkgs; [
   slurp
   # file manager
   nautilus
-  rofi
   # media/audio
   playerctl
   brightnessctl
@@ -127,11 +132,22 @@ environment.systemPackages = with pkgs; [
   # tasks
   btop
   htop
+  # apps
+  spotify
+  discord
+  android-studio
+  android-tools
 ];
+
+programs.xwayland.enable = true;
 
 environment.sessionVariables = {
   XCURSOR_THEME = "Bibata-Modern-Classic";
   XCURSOR_SIZE = "24";
+  NIXOS_OZONE_WL = "1";
+  DISPLAY = ":0";
+  ELECTRON_OZONE_PLATFORM_HINT = "wayland";  
+  _JAVA_AWT_WM_NONREPARENTING = "1";
 };
 
   fonts.packages = with pkgs; [
@@ -153,14 +169,33 @@ environment.sessionVariables = {
   services.displayManager.sddm.enable = true;
   services.dbus.enable = true;
 
+  # Enable bluetooth
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+  services.blueman.enable = true;
+
+  boot.kernelModules = [ "btusb" "kvm-amd" ];
+
   hardware.graphics.enable = true;
 
+  # Nvidia
   hardware.nvidia = {
     modesetting.enable = true;
     open = false;
   };
 
   services.xserver.videoDrivers = [ "nvidia" ];
+
+  # Unblock bluetooth at startup
+  systemd.services.rfkill-unblock-bluetooth = {
+  description = "Unblock Bluetooth rfkill";
+  wantedBy = [ "bluetooth.target" ];
+  before = [ "bluetooth.service" ];
+  serviceConfig = {
+    Type = "oneshot";
+    ExecStart = "${pkgs.util-linux}/bin/rfkill unblock bluetooth";
+  };
+};
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
