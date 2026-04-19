@@ -132,8 +132,8 @@ environment.systemPackages = with pkgs; [
   # utils his scripts need
   jq
   curl
-  # normal cursor
-  bibata-cursors
+  # custom cursor
+  phinger-cursors
   # fetch
   fastfetch
   # tasks
@@ -151,13 +151,18 @@ environment.systemPackages = with pkgs; [
   android-studio
   # adb
   android-tools
+  # gsettings
+  gsettings-desktop-schemas
+  glib
+  # terminal theme
+  starship
 ];
 
 programs.xwayland.enable = true;
 
 environment.sessionVariables = {
-  XCURSOR_THEME = "Bibata-Modern-Classic";
-  XCURSOR_SIZE = "24";
+  XCURSOR_THEME = "phinger-cursors-dark";
+  XCURSOR_SIZE = "16";
   NIXOS_OZONE_WL = "1";
   _JAVA_AWT_WM_NONREPARENTING = "1";
 };
@@ -179,12 +184,7 @@ environment.sessionVariables = {
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   
-  services.displayManager.sddm = {
-    enable = true;
-    wayland.enable = true;
-    theme = "";
-    extraPackages = with pkgs; [ bibata-cursors ];
-  };
+  services.displayManager.sddm.enable = true;
 
   services.dbus.enable = true;
 
