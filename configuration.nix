@@ -92,12 +92,19 @@
   # Use Niri.
   programs.niri.enable = true;
 
-  # Disable firefox
-programs.firefox.enable = false;
+  # Generic Linux binaries
+  programs.nix-ld.enable = true;
 
-# Virtualization for Android Studio
-virtualisation.libvirtd.enable = true;
-programs.virt-manager.enable = true;
+  # Disable firefox
+  programs.firefox.enable = false;
+
+  # Virtualization for Android Studio
+  virtualisation.libvirtd.enable = true;
+  programs.virt-manager.enable = true;
+
+  services.flatpak.enable = true;
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -132,10 +139,17 @@ environment.systemPackages = with pkgs; [
   # tasks
   btop
   htop
-  # apps
-  spotify
-  discord
+  # app store flatpak
+  gnome-software
+  # others
+  xhost
+  # ssl
+  openssl
+  # xwayland
+  xwayland-satellite
+  # android studio
   android-studio
+  # adb
   android-tools
 ];
 
@@ -145,8 +159,6 @@ environment.sessionVariables = {
   XCURSOR_THEME = "Bibata-Modern-Classic";
   XCURSOR_SIZE = "24";
   NIXOS_OZONE_WL = "1";
-  DISPLAY = ":0";
-  ELECTRON_OZONE_PLATFORM_HINT = "wayland";  
   _JAVA_AWT_WM_NONREPARENTING = "1";
 };
 
@@ -166,7 +178,14 @@ environment.sessionVariables = {
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-  services.displayManager.sddm.enable = true;
+  
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = true;
+    theme = "";
+    extraPackages = with pkgs; [ bibata-cursors ];
+  };
+
   services.dbus.enable = true;
 
   # Enable bluetooth
@@ -175,6 +194,7 @@ environment.sessionVariables = {
   services.blueman.enable = true;
 
   boot.kernelModules = [ "btusb" "kvm-amd" ];
+  boot.kernelParams = [ "nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" ];
 
   hardware.graphics.enable = true;
 
@@ -190,12 +210,76 @@ environment.sessionVariables = {
   systemd.services.rfkill-unblock-bluetooth = {
   description = "Unblock Bluetooth rfkill";
   wantedBy = [ "bluetooth.target" ];
-  before = [ "bluetooth.service" ];
+  after = [ "bluetooth.service" ];
   serviceConfig = {
     Type = "oneshot";
+    ExecStartPre = "${pkgs.coreutils}/bin/sleep 2";
     ExecStart = "${pkgs.util-linux}/bin/rfkill unblock bluetooth";
   };
 };
+
+  # Discord privacy
+  services.gnome.gnome-keyring.enable = true;
+  security.pam.services.login.enableGnomeKeyring = true;
+
+  programs.nix-ld.libraries = with pkgs; [
+  libX11
+  libXext
+  libXrender
+  libXtst
+  libXi
+  libXfixes
+  libXcursor
+  libXrandr
+  libpulseaudio
+  libGL
+  libpng
+  libxcb
+
+xcbutil
+xcbutilcursor
+xcbutilimage
+xcbutilkeysyms
+xcbutilrenderutil
+xcbutilwm
+
+  libxkbfile
+libXxf86vm
+libXdamage
+libXcomposite
+libXinerama
+freetype
+fontconfig
+cairo
+pango
+atk
+gtk2
+libsecret
+libbsd
+libunwind
+libgpg-error
+libgcrypt
+lz4
+zstd
+bzip2
+xz
+pcre2
+util-linux
+e2fsprogs
+  vulkan-loader
+  zlib
+  glib
+  gtk3
+  nss
+  nspr
+  dbus
+  expat
+  libdrm
+  mesa
+  alsa-lib
+  udev
+  systemd
+];
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
