@@ -191,7 +191,6 @@ environment.sessionVariables = {
   # Enable bluetooth
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
-  services.blueman.enable = true;
 
   boot.kernelModules = [ "btusb" "kvm-amd" ];
   boot.kernelParams = [ "nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" ];
@@ -205,18 +204,6 @@ environment.sessionVariables = {
   };
 
   services.xserver.videoDrivers = [ "nvidia" ];
-
-  # Unblock bluetooth at startup
-  systemd.services.rfkill-unblock-bluetooth = {
-  description = "Unblock Bluetooth rfkill";
-  wantedBy = [ "bluetooth.target" ];
-  after = [ "bluetooth.service" ];
-  serviceConfig = {
-    Type = "oneshot";
-    ExecStartPre = "${pkgs.coreutils}/bin/sleep 2";
-    ExecStart = "${pkgs.util-linux}/bin/rfkill unblock bluetooth";
-  };
-};
 
   # Discord privacy
   services.gnome.gnome-keyring.enable = true;
