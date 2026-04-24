@@ -42,16 +42,14 @@
     LC_TIME = "nl_NL.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = true;
+  };
 
-  # KDE Plasma 6 on X11
-  services.displayManager.sddm.enable = true;
+  # KDE Plasma 6 on either Wayland or X11
   services.desktopManager.plasma6.enable = true;
-  services.xserver.displayManager.lightdm.enable = false;
-  services.displayManager.defaultSession = "plasmax11";
-
-  services.displayManager.sddm.wayland.enable = false;  # disable wayland in sddm
+  services.xserver.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -192,6 +190,15 @@
 
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.login.enableGnomeKeyring = true;
+
+  nixpkgs.config.android-studio = {
+    extraEnvironment = {
+      _JAVA_AWT_WM_NONREPARENTING = "1";
+      AWT_TOOLKIT = "MToolkit";
+      GDK_BACKEND = "x11";
+      QT_QPA_PLATFORM = "xcb";
+    };
+  };
 
   programs.nix-ld.libraries = with pkgs; [
     libX11
