@@ -79,6 +79,7 @@
   };
 
   nixpkgs.config.allowUnfree = true;
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Generic Linux binaries (needed for Android Studio / emulator)
   programs.nix-ld.enable = true;
