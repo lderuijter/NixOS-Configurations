@@ -89,6 +89,10 @@
     ];
   };
 
+  # Use fish instead of standard bash
+  programs.fish.enable = true;
+  users.users.rocco.shell = pkgs.fish;
+
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
