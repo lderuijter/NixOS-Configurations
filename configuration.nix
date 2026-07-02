@@ -206,8 +206,6 @@
   boot.kernelModules = [ "btusb" "kvm-amd" ];
   boot.kernelParams = [ "nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" ];
 
-  hardware.graphics.enable = true;
-
   # Nvidia
   hardware.nvidia = {
     modesetting.enable = true;
