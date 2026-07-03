@@ -165,6 +165,9 @@
     # ssl
     openssl
 
+    # coding
+    jetbrains.phpstorm
+
     # android studio + tools
     android-studio
     android-tools
