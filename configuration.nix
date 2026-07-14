@@ -85,7 +85,7 @@
   users.users.rocco = {
     isNormalUser = true;
     description = "Rocco";
-    extraGroups = [ "networkmanager" "wheel" "bluetooth" "libvirtd" "adbusers" "kvm" ];
+    extraGroups = [ "docker" "networkmanager" "wheel" "bluetooth" "libvirtd" "adbusers" "kvm" ];
     packages = with pkgs; [
     ];
   };
