@@ -13,6 +13,7 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.systemd-boot.configurationLimit = 3;
 
   # Latest kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -90,7 +91,12 @@
   };
 
   # Use fish instead of standard bash
-  programs.fish.enable = true;
+  programs.fish = {
+    enable = true;
+    interactiveShellInit = ''
+      set -g fish_greeting
+    '';
+  };
   users.users.rocco.shell = pkgs.fish;
 
   nixpkgs.config.allowUnfree = true;
@@ -102,6 +108,7 @@
   # Virtualization for Android Studio emulator
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
+  virtualisation.docker.enable = true;
 
   services.flatpak.enable = true;
 
@@ -140,10 +147,11 @@
     # file manager
     kdePackages.dolphin
 
-    # media/audio
+    # media/audio/video
     playerctl
     brightnessctl
     wireplumber
+    haruna
 
     # utils
     jq
@@ -167,6 +175,10 @@
 
     # coding
     jetbrains.phpstorm
+    (php.withExtensions ({ enabled, all }: enabled ++ [ all.pdo_pgsql all.pgsql ]))
+    phpPackages.composer
+    nodejs
+    docker-compose
 
     # android studio + tools
     android-studio
