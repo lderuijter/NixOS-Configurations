@@ -130,6 +130,9 @@
     # zen-browser
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
 
+    # Discord
+    discord
+
     # terminal
     kitty
 
