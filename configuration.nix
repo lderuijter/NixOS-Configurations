@@ -130,9 +130,6 @@
     # zen-browser
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
 
-    # splatoon 3 status for discord
-    (callPackage ./nxapi.nix {})
-
     # terminal
     kitty
 
