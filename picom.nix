@@ -13,14 +13,4 @@
       fade-out-step = 0.03;
     };
   };
-
-  systemd.user.services.picom = {
-    description = "Picom compositor";
-    wantedBy = [ "graphical-session.target" ];
-    partOf = [ "graphical-session.target" ];
-    serviceConfig = {
-      ExecStart = "${pkgs.picom}/bin/picom";
-      Restart = "on-failure";
-    };
-  };
 }

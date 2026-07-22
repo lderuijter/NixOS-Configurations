@@ -57,7 +57,7 @@
 
   services.xserver.displayManager.lightdm.enable = true;
 
-  services.xserver.displayManager.sddm.enable = false;
+  services.displayManager.sddm.enable = false;
   services.desktopManager.plasma6.enable = false;
 
   # Configure keymap in X11
@@ -132,9 +132,9 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    xfce.thunar-archive-plugin
-    xfce.thunar-volman
-    xfce.xfce4-whiskermenu-plugin
+    thunar-archive-plugin
+    thunar-volman
+    xfce4-whiskermenu-plugin
 
     # zen-browser
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
