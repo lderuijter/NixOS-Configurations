@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./picom.nix
     ];
 
   # Bootloader.
@@ -46,14 +47,18 @@
     LC_TIME = "nl_NL.UTF-8";
   };
 
-  services.displayManager.sddm = {
+  services.xserver = {
     enable = true;
-    wayland.enable = true;
+    desktopManager.xfce = {
+      enable = true;
+      enableScreensaver = false;
+    };
   };
 
-  # KDE Plasma 6 on either Wayland or X11
-  services.desktopManager.plasma6.enable = true;
-  services.xserver.enable = true;
+  services.xserver.displayManager.lightdm.enable = true;
+
+  services.xserver.displayManager.sddm.enable = false;
+  services.desktopManager.plasma6.enable = false;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -127,6 +132,10 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    xfce.thunar-archive-plugin
+    xfce.thunar-volman
+    xfce.xfce4-whiskermenu-plugin
+
     # zen-browser
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
 
@@ -143,12 +152,6 @@
     inotify-tools
     python3
     git
-
-    kdePackages.spectacle   # KDE screenshot tool
-    scrot       # CLI fallback
-
-    # file manager
-    kdePackages.dolphin
 
     # media/audio/video
     playerctl
@@ -170,9 +173,6 @@
     btop
     htop
 
-    # app store / flatpak
-    gnome-software
-
     # ssl
     openssl
 
@@ -186,9 +186,6 @@
     # android studio + tools
     android-studio
     android-tools
-
-    gsettings-desktop-schemas
-    glib
 
     # terminal theme
     starship
